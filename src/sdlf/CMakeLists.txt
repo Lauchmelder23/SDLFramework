@@ -5,6 +5,7 @@ add_library(sdlf STATIC
 
 target_include_directories(sdlf PRIVATE
 	"${CMAKE_SOURCE_DIR}/3rdparty/include/SDL"
+	"maths"
 )
 
 target_link_libraries(sdlf PRIVATE
