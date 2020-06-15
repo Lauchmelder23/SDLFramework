@@ -62,6 +62,11 @@ namespace sf
 
 	}
 
+	void IWindow::AddEventCallback(EventCallback callback, void* userdata)
+	{
+		SDL_AddEventWatch(*(callback.target<SDL_EventFilter>()), userdata);
+	}
+
 	IWindow::IWindow(Vector2u size, Vector2i position, std::string title,
 		Uint32 flags /*= SDL_WINDOW_RESIZABLE*/) :
 		m_pWindow(nullptr), m_pRenderer(nullptr), m_oEvent(),
@@ -83,6 +88,8 @@ namespace sf
 		{
 			while (SDL_PollEvent(&m_oEvent))
 			{
+				OnEvent(m_oEvent);
+
 				if (m_oEvent.type == SDL_QUIT)
 				{
 					m_atomWindowOpen = false;

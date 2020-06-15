@@ -3,6 +3,7 @@
 #include <string>
 #include <thread>
 #include <atomic>
+#include <functional>
 
 #include "SDL.h"
 #include "util/Vector2.hpp"
@@ -11,6 +12,8 @@
 
 namespace sf
 {
+	typedef std::function<int(void*, SDL_Event*)> EventCallback;
+
 	class IWindow
 	{
 	public:
@@ -21,11 +24,14 @@ namespace sf
 
 		bool IsOpen() { return m_atomWindowOpen; }
 
+		void AddEventCallback(EventCallback callback, void* userdata);
+
 	protected:
 		IWindow(Vector2u size, Vector2i position, std::string title, Uint32 flags = SDL_WINDOW_RESIZABLE);
 
 		virtual bool OnCreate() { return true; }
 		virtual void OnClose() { }
+		virtual void OnEvent(const SDL_Event& event) { }
 		virtual bool OnUpdate(double frametime) { return true; }
 
 	protected:

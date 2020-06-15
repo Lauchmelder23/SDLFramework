@@ -4,6 +4,12 @@
 
 using namespace sf;
 
+int Callback(void* userdata, SDL_Event* event)
+{
+	std::cout << event->type << std::endl;
+	return 0;
+}
+
 class MyWindow : public IWindow
 {
 public:
@@ -27,7 +33,7 @@ private:
 
 	virtual bool OnUpdate(double frametime) override
 	{
-		printf("Frame took %f seconds\n", frametime);
+		SDL_SetWindowTitle(m_pWindow, std::to_string(frametime).c_str());
 		return true;
 	}
 };
@@ -37,6 +43,7 @@ int main(int argc, char* argv[])
 	SDL_Init(SDL_INIT_VIDEO);
 
 	MyWindow window;
+	window.AddEventCallback(Callback, nullptr);
 
 	try
 	{
