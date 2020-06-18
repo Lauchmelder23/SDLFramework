@@ -4,11 +4,35 @@
 
 using namespace sf;
 
-int Callback(void* userdata, SDL_Event* event)
+class MyScreen : public IScreen
 {
-	std::cout << event->type << std::endl;
-	return 0;
-}
+public:
+	virtual void OnFocus() override
+	{
+		printf("Received Focus\n");
+	}
+
+	virtual void OnDefocus() override
+	{
+		printf("Lost Focus\n");
+	}
+
+	virtual void OnRender(SDL_Renderer* renderer) override
+	{
+		SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+		SDL_RenderClear(renderer);
+	}
+
+	static MyScreen* Get() 
+	{
+		static MyScreen* instance = new MyScreen;
+		return instance;
+	}
+private:
+	MyScreen() = default;
+};
+
+
 
 class MyWindow : public IWindow
 {
@@ -22,6 +46,7 @@ public:
 private:
 	virtual bool OnCreate() override
 	{
+		SwitchScreen(MyScreen::Get());
 		printf("On Create\n");
 		return true;
 	}
@@ -38,12 +63,13 @@ private:
 	}
 };
 
+
+
 int main(int argc, char* argv[])
 {
 	SDL_Init(SDL_INIT_VIDEO);
 
 	MyWindow window;
-	window.AddEventCallback(Callback, nullptr);
 
 	try
 	{

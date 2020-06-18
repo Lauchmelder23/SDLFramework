@@ -7,6 +7,7 @@
 
 #include "SDL.h"
 #include "util/Vector2.hpp"
+#include "Screen.hpp"
 
 #define SDLF_REQUIRED_SUBSYSTEMS SDL_INIT_VIDEO
 
@@ -26,6 +27,8 @@ namespace sf
 
 		void AddEventCallback(EventCallback callback, void* userdata);
 
+		void SwitchScreen(IScreen* screen);
+
 	protected:
 		IWindow(Vector2u size, Vector2i position, std::string title, Uint32 flags = SDL_WINDOW_RESIZABLE);
 
@@ -33,6 +36,7 @@ namespace sf
 		virtual void OnClose() { }
 		virtual void OnEvent(const SDL_Event& event) { }
 		virtual bool OnUpdate(double frametime) { return true; }
+		virtual void OnRender(SDL_Renderer* renderer) { }
 
 	protected:
 		SDL_Window* m_pWindow;
@@ -49,7 +53,13 @@ namespace sf
 		std::string m_strTitle;
 		Uint32 m_uFlags;
 
+		IScreen* m_pCurrentScreen;
+
 		std::thread m_oMsgLoopThread;
 		std::atomic_bool m_atomWindowOpen;
+
+		std::function<void( SDL_Event& )> m_oEventFunction;
+		std::function<bool( double )>			m_oUpdateFunction;
+		std::function<void( SDL_Renderer* )>	m_oRenderFunction;
 	};
 }

@@ -7,15 +7,15 @@ namespace sf
 	class IScreen
 	{
 	public:
+		virtual void OnFocus() {}							// Called when the screen is being switched to
+		virtual void OnDefocus() {}							// Called when the screen is being switched from
+		virtual bool OnUpdate(double frametime) { return true; }			// Called every frame
+		virtual void OnEvent(const SDL_Event& event) {}		// Called after an event occurs
+		virtual void OnRender(SDL_Renderer* renderer) {}	// Called for rendering
 
 	protected:
-		IScreen();
+		IScreen() = default;
 
-		virtual void OnFocus() = 0;							// Called when the screen is being switched to
-		virtual void OnDefocus() = 0;						// Called when the screen is being switched from
-		virtual void OnUpdate(double frametime) = 0;		// Called every frame
-		virtual void OnEvent(const SDL_Event& event) = 0;	// Called after an event occurs
-	
 	private:
 	};
 }

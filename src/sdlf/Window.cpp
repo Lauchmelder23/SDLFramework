@@ -33,6 +33,10 @@ namespace sf
 			THROW_IF_NULLPTR(m_pRenderer);
 		}
 
+		m_oEventFunction = std::bind(&IWindow::OnEvent, this, std::placeholders::_1);
+		m_oUpdateFunction = std::bind<bool>(&IWindow::OnUpdate, this, std::placeholders::_1);
+		m_oRenderFunction = std::bind(&IWindow::OnRender, this, std::placeholders::_1);
+
 	}
 
 	void IWindow::Destroy()
@@ -67,10 +71,38 @@ namespace sf
 		SDL_AddEventWatch(*(callback.target<SDL_EventFilter>()), userdata);
 	}
 
+	void IWindow::SwitchScreen(IScreen* screen)
+	{
+		if (m_pCurrentScreen == screen)
+			return;
+
+		if (IS_NOT_NULLPTR(m_pCurrentScreen))
+			m_pCurrentScreen->OnDefocus();
+		
+		m_pCurrentScreen = screen;
+
+		if (IS_NOT_NULLPTR(m_pCurrentScreen))
+		{
+			m_oEventFunction = std::bind(&IScreen::OnEvent, m_pCurrentScreen, std::placeholders::_1);
+			m_oUpdateFunction = std::bind<bool>(&IScreen::OnUpdate, m_pCurrentScreen, std::placeholders::_1);
+			m_oRenderFunction = std::bind(&IScreen::OnRender, m_pCurrentScreen, std::placeholders::_1);
+
+			m_pCurrentScreen->OnFocus();
+		}
+		else
+		{
+			m_oEventFunction = std::bind(&IWindow::OnEvent, this, std::placeholders::_1);
+			m_oUpdateFunction = std::bind<bool>(&IWindow::OnUpdate, this, std::placeholders::_1);
+			m_oRenderFunction = std::bind(&IWindow::OnRender, this, std::placeholders::_1);
+
+		}
+	}
+
 	IWindow::IWindow(Vector2u size, Vector2i position, std::string title,
 		Uint32 flags /*= SDL_WINDOW_RESIZABLE*/) :
 		m_pWindow(nullptr), m_pRenderer(nullptr), m_oEvent(),
-		m_oSize(size), m_oPosition(position), m_strTitle(title), m_uFlags(flags)
+		m_oSize(size), m_oPosition(position), m_strTitle(title), m_uFlags(flags),
+		m_pCurrentScreen(nullptr)
 	{
 		
 	}
@@ -88,7 +120,7 @@ namespace sf
 		{
 			while (SDL_PollEvent(&m_oEvent))
 			{
-				OnEvent(m_oEvent);
+				m_oEventFunction(m_oEvent);
 
 				if (m_oEvent.type == SDL_QUIT)
 				{
@@ -100,11 +132,10 @@ namespace sf
 				std::chrono::steady_clock::now() - pastTime
 				).count();
 			pastTime = std::chrono::steady_clock::now();
-			if (!OnUpdate(frametime))
+			if (!m_oUpdateFunction(frametime))
 				m_atomWindowOpen = false;
 
-			SDL_SetRenderDrawColor(m_pRenderer, 0, 0, 0, 255);
-			SDL_RenderClear(m_pRenderer);
+			m_oRenderFunction(m_pRenderer);
 
 			SDL_RenderPresent(m_pRenderer);
 		}
