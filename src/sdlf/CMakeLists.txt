@@ -4,10 +4,10 @@ add_library(sdlf STATIC
 )
 
 target_include_directories(sdlf PRIVATE
-	"${CMAKE_SOURCE_DIR}/3rdparty/include/SDL"
+	"${PROJECT_SOURCE_DIR}/3rdparty/include/SDL"
 )
 
 target_link_libraries(sdlf PRIVATE
-	"${CMAKE_SOURCE_DIR}/3rdparty/lib/SDL2.lib"
-	"${CMAKE_SOURCE_DIR}/3rdparty/lib/SDL2main.lib"
+	"${PROJECT_SOURCE_DIR}/3rdparty/lib/SDL2.lib"
+	"${PROJECT_SOURCE_DIR}/3rdparty/lib/SDL2main.lib"
 )

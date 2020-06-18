@@ -4,6 +4,8 @@
 
 namespace sf
 {
+	class IWindow;
+
 	class IScreen : public ICallback
 	{
 	public:
