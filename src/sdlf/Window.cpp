@@ -6,7 +6,8 @@
 namespace sf
 {
 
-	void IWindow::Create(Vector2u size, Vector2i position, std::string title, Uint32 flags /*= SDL_WINDOW_RESIZABLE*/)
+	void IWindow::Create(Vector2u size, Vector2i position, std::string title, 
+		Uint32 windowFlags /*= SDL_WINDOW_RESIZABLE*/, Uint32 renderFlags /*= SDL_RENDERER_SOFTWARE*/)
 	{
 		// Check if SDL was initialized
 		Uint32 mask = SDL_WasInit(0);
@@ -22,14 +23,14 @@ namespace sf
 		// Create SDL_Window
 		if (m_pWindow == nullptr)
 		{
-			m_pWindow = SDL_CreateWindow(title.c_str(), position.x, position.y, size.x, size.y, flags);
+			m_pWindow = SDL_CreateWindow(title.c_str(), position.x, position.y, size.x, size.y, windowFlags);
 			THROW_IF_NULLPTR(m_pWindow);
 		}
 
 		// Create SDL_Renderer
 		if (m_pRenderer == nullptr)
 		{
-			m_pRenderer = SDL_CreateRenderer(m_pWindow, -1, SDL_RENDERER_SOFTWARE);
+			m_pRenderer = SDL_CreateRenderer(m_pWindow, -1, renderFlags);
 			THROW_IF_NULLPTR(m_pRenderer);
 		}
 

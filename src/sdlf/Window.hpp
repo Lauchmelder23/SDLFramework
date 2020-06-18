@@ -18,7 +18,8 @@ namespace sf
 	class IWindow : public ICallback
 	{
 	public:
-		void Create(Vector2u size, Vector2i position, std::string title, Uint32 flags = SDL_WINDOW_RESIZABLE);
+		void Create(Vector2u size, Vector2i position, std::string title, 
+			Uint32 windowFlags = SDL_WINDOW_RESIZABLE, Uint32 rendererFlags = SDL_RENDERER_SOFTWARE);
 
 		void Launch(bool threaded = false);
 		void Stop();
