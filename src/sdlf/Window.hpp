@@ -31,7 +31,8 @@ namespace sf
 		void SwitchScreen(IScreen* screen);
 
 	protected:
-		IWindow(Vector2u size, Vector2i position, std::string title, Uint32 flags = SDL_WINDOW_RESIZABLE);
+		IWindow(Vector2u size, Vector2i position, std::string title, 
+			Uint32 flags = SDL_WINDOW_RESIZABLE, Uint32 rendererFlags = SDL_RENDERER_SOFTWARE);
 
 		virtual bool OnCreate() { return true; }
 		virtual void OnClose() { }
@@ -52,7 +53,7 @@ namespace sf
 		Vector2u m_oSize;
 		Vector2i m_oPosition;
 		std::string m_strTitle;
-		Uint32 m_uFlags;
+		Uint32 m_uWindowFlags, m_uRenderFlags;
 
 		IScreen* m_pCurrentScreen;
 

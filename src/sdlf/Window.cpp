@@ -100,17 +100,17 @@ namespace sf
 	}
 
 	IWindow::IWindow(Vector2u size, Vector2i position, std::string title,
-		Uint32 flags /*= SDL_WINDOW_RESIZABLE*/) :
+		Uint32 windowFlags /*= SDL_WINDOW_RESIZABLE*/, Uint32 renderFlags /*= SDL_RENDERER_SOFTWARE*/) :
 		m_pWindow(nullptr), m_pRenderer(nullptr), m_oEvent(),
-		m_oSize(size), m_oPosition(position), m_strTitle(title), m_uFlags(flags),
-		m_pCurrentScreen(nullptr)
+		m_oSize(size), m_oPosition(position), m_strTitle(title), m_uWindowFlags(windowFlags),
+		m_uRenderFlags(renderFlags), m_pCurrentScreen(nullptr)
 	{
 		
 	}
 
 	void IWindow::MessageLoop()
 	{
-		Create(m_oSize, m_oPosition, m_strTitle, m_uFlags);
+		Create(m_oSize, m_oPosition, m_strTitle, m_uWindowFlags, m_uRenderFlags);
 
 		// Test if the user instance's creation succeeded
 		if (!OnCreate()) 
