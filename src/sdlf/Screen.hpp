@@ -1,21 +1,20 @@
 #pragma once
 
-#include "SDL.h"
+#include "util/Callback.hpp"
 
 namespace sf
 {
-	class IScreen
+	class IScreen : public ICallback
 	{
 	public:
-		virtual void OnFocus() {}							// Called when the screen is being switched to
-		virtual void OnDefocus() {}							// Called when the screen is being switched from
-		virtual bool OnUpdate(double frametime) { return true; }			// Called every frame
-		virtual void OnEvent(const SDL_Event& event) {}		// Called after an event occurs
-		virtual void OnRender(SDL_Renderer* renderer) {}	// Called for rendering
+		virtual void OnFocus(IWindow* parent) { }
+		virtual void OnDefocus() { }
+		virtual bool OnUpdate(double frametime) override { return true; }
+		virtual bool OnEvent(const SDL_Event& event) override { return true; }
+		virtual void OnRender(SDL_Renderer* renderer) override {}	
 
 	protected:
 		IScreen() = default;
-
 	private:
 	};
 }

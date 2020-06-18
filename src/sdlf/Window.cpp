@@ -87,7 +87,7 @@ namespace sf
 			m_oUpdateFunction = std::bind<bool>(&IScreen::OnUpdate, m_pCurrentScreen, std::placeholders::_1);
 			m_oRenderFunction = std::bind(&IScreen::OnRender, m_pCurrentScreen, std::placeholders::_1);
 
-			m_pCurrentScreen->OnFocus();
+			m_pCurrentScreen->OnFocus(this);
 		}
 		else
 		{
@@ -120,11 +120,13 @@ namespace sf
 		{
 			while (SDL_PollEvent(&m_oEvent))
 			{
-				m_oEventFunction(m_oEvent);
-
-				if (m_oEvent.type == SDL_QUIT)
+				if (m_oEventFunction(m_oEvent))
 				{
-					m_atomWindowOpen = false;
+
+					if (m_oEvent.type == SDL_QUIT)
+					{
+						m_atomWindowOpen = false;
+					}
 				}
 			}
 

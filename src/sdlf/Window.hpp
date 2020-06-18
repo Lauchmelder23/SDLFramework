@@ -5,8 +5,8 @@
 #include <atomic>
 #include <functional>
 
-#include "SDL.h"
 #include "util/Vector2.hpp"
+#include "util/Callback.hpp"
 #include "Screen.hpp"
 
 #define SDLF_REQUIRED_SUBSYSTEMS SDL_INIT_VIDEO
@@ -15,7 +15,7 @@ namespace sf
 {
 	typedef std::function<int(void*, SDL_Event*)> EventCallback;
 
-	class IWindow
+	class IWindow : public ICallback
 	{
 	public:
 		void Create(Vector2u size, Vector2i position, std::string title, Uint32 flags = SDL_WINDOW_RESIZABLE);
@@ -34,9 +34,9 @@ namespace sf
 
 		virtual bool OnCreate() { return true; }
 		virtual void OnClose() { }
-		virtual void OnEvent(const SDL_Event& event) { }
-		virtual bool OnUpdate(double frametime) { return true; }
-		virtual void OnRender(SDL_Renderer* renderer) { }
+		virtual bool OnEvent(const SDL_Event& event) override { return true; }
+		virtual bool OnUpdate(double frametime) override { return true; }
+		virtual void OnRender(SDL_Renderer* renderer) override { }
 
 	protected:
 		SDL_Window* m_pWindow;
@@ -58,7 +58,7 @@ namespace sf
 		std::thread m_oMsgLoopThread;
 		std::atomic_bool m_atomWindowOpen;
 
-		std::function<void( SDL_Event& )> m_oEventFunction;
+		std::function<bool( SDL_Event& )> m_oEventFunction;
 		std::function<bool( double )>			m_oUpdateFunction;
 		std::function<void( SDL_Renderer* )>	m_oRenderFunction;
 	};
