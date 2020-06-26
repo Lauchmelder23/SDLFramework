@@ -44,6 +44,7 @@ namespace sf
 		SDL_Window* m_pWindow;
 		SDL_Renderer* m_pRenderer;
 		SDL_Event m_oEvent;
+		std::atomic_bool m_atomWindowOpen;
 
 	private:
 		void MessageLoop();
@@ -58,7 +59,7 @@ namespace sf
 		IScreen* m_pCurrentScreen;
 
 		std::thread m_oMsgLoopThread;
-		std::atomic_bool m_atomWindowOpen;
+
 
 		std::function<bool( SDL_Event& )> m_oEventFunction;
 		std::function<bool( double )>			m_oUpdateFunction;
