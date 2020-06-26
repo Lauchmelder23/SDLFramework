@@ -65,7 +65,7 @@ namespace sf
 		Vector2& operator*=(T right)
 		{
 			x *= right;
-			y *= left;
+			y *= right;
 			return this;
 		}
 
@@ -77,7 +77,7 @@ namespace sf
 		Vector2& operator/=(T right)
 		{
 			x /= right;
-			y /= left;
+			y /= right;
 			return this;
 		}
 	};
