@@ -2,6 +2,7 @@
 
 #include <sstream>
 #include <iostream>
+#include <cstring>
 #include "util/util.hpp"
 
 namespace sf
@@ -123,7 +124,7 @@ namespace sf
 	void IWindow::MessageLoop()
 	{
 		Create(m_oSize, m_oPosition, m_strTitle, m_uWindowFlags, m_uRenderFlags);
-		if (strcmp(m_pCurrentException, ""))
+		if (std::strcmp(m_pCurrentException, ""))
 		{
 			std::cerr << "ERROR: " << m_pCurrentException << std::endl;
 			return;
