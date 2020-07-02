@@ -20,7 +20,8 @@ namespace sf
 			std::ostringstream errorStream;
 			errorStream << "One or more required subsystems were not initialized. (Expected " <<
 				SDLF_REQUIRED_SUBSYSTEMS << " but got " << mask << " instead). \n" <<
-				"Make sure to call SDL_Init(" << SDLF_REQUIRED_SUBSYSTEMS << ") before instantiating sf::IWindow.";
+				"Make sure to call SDL_Init(" << SDLF_REQUIRED_SUBSYSTEMS << ") before instantiating sf::IWindow. \n" <<
+				"The most recent SDL_Error is: " << SDL_GetError() << std::endl;
 			m_pCurrentException = const_cast<char*>(errorStream.str().c_str());
 			return;
 		}
