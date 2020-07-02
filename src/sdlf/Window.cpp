@@ -1,6 +1,7 @@
 #include "Window.hpp"
 
 #include <sstream>
+#include <iostream>
 #include "util/util.hpp"
 
 namespace sf
@@ -9,6 +10,8 @@ namespace sf
 	void IWindow::Create(Vector2u size, Vector2i position, std::string title, 
 		Uint32 windowFlags /*= SDL_WINDOW_RESIZABLE*/, Uint32 renderFlags /*= SDL_RENDERER_SOFTWARE*/)
 	{
+		m_pCurrentException = "";
+
 		// Check if SDL was initialized
 		Uint32 mask = SDL_WasInit(0);
 		if ((mask & SDLF_REQUIRED_SUBSYSTEMS) != SDLF_REQUIRED_SUBSYSTEMS)
@@ -17,21 +20,30 @@ namespace sf
 			errorStream << "One or more required subsystems were not initialized. (Expected " <<
 				SDLF_REQUIRED_SUBSYSTEMS << " but got " << mask << " instead). \n" <<
 				"Make sure to call SDL_Init(" << SDLF_REQUIRED_SUBSYSTEMS << ") before instantiating sf::IWindow.";
-			throw errorStream.str();
+			m_pCurrentException = const_cast<char*>(errorStream.str().c_str());
+			return;
 		}
 
 		// Create SDL_Window
 		if (m_pWindow == nullptr)
 		{
 			m_pWindow = SDL_CreateWindow(title.c_str(), position.x, position.y, size.x, size.y, windowFlags);
-			THROW_IF_NULLPTR(m_pWindow);
+			if (IS_NULLPTR(m_pWindow))
+			{
+				m_pCurrentException = const_cast<char*>(SDL_GetError());
+				return;
+			}
 		}
 
 		// Create SDL_Renderer
 		if (m_pRenderer == nullptr)
 		{
 			m_pRenderer = SDL_CreateRenderer(m_pWindow, -1, renderFlags);
-			THROW_IF_NULLPTR(m_pRenderer);
+			if (IS_NULLPTR(m_pRenderer))
+			{
+				m_pCurrentException = const_cast<char*>(SDL_GetError());
+				return;
+			}
 		}
 
 		m_oEventFunction = std::bind(&IWindow::OnEvent, this, std::placeholders::_1);
@@ -103,7 +115,7 @@ namespace sf
 		Uint32 windowFlags /*= SDL_WINDOW_RESIZABLE*/, Uint32 renderFlags /*= SDL_RENDERER_SOFTWARE*/) :
 		m_pWindow(nullptr), m_pRenderer(nullptr), m_oEvent(),
 		m_oSize(size), m_oPosition(position), m_strTitle(title), m_uWindowFlags(windowFlags),
-		m_uRenderFlags(renderFlags), m_pCurrentScreen(nullptr)
+		m_uRenderFlags(renderFlags), m_pCurrentScreen(nullptr), m_pCurrentException("")
 	{
 		
 	}
@@ -111,6 +123,11 @@ namespace sf
 	void IWindow::MessageLoop()
 	{
 		Create(m_oSize, m_oPosition, m_strTitle, m_uWindowFlags, m_uRenderFlags);
+		if (strcmp(m_pCurrentException, ""))
+		{
+			std::cerr << "ERROR: " << m_pCurrentException << std::endl;
+			return;
+		}
 
 		// Test if the user instance's creation succeeded
 		if (!OnCreate()) 
