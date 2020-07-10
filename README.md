@@ -18,10 +18,10 @@ public:
   
 private:
   virtual bool OnCreate() { return true; }
-	virtual void OnClose() { }
-	virtual bool OnEvent(const SDL_Event& event) { return true;}
-	virtual bool OnUpdate(double frametime) { return true; }
-	virtual void OnRender(SDL_Renderer* renderer) { }
+  virtual void OnClose() { }
+  virtual bool OnEvent(const SDL_Event& event) { return true;}
+  virtual bool OnUpdate(double frametime) { return true; }
+  virtual void OnRender(SDL_Renderer* renderer) { }
 };
 ```
 
