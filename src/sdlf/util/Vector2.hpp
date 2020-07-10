@@ -86,4 +86,9 @@ namespace sf
 	typedef Vector2<unsigned>	Vector2u, Vec2u;
 	typedef Vector2<float>		Vector2f, Vec2f;
 	typedef Vector2<double>		Vector2d, Vec2d;
+
+	const static Vector2i UnitVector2i = Vector2i(1, 1);
+	const static Vector2u UnitVector2u = Vector2u(1, 1);
+	const static Vector2f UnitVector2f = Vector2f(1.f, 1.f);
+	const static Vector2d UnitVector2d = Vector2d(1.f, 1.f);
 }
