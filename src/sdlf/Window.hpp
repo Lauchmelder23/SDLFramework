@@ -30,7 +30,7 @@ namespace sf
 
 		void SwitchScreen(IScreen* screen);
 
-		const char* GetCurrentException() const { return m_pCurrentException; }
+		std::string GetCurrentException() const { return m_pCurrentException; }
 
 	protected:
 		IWindow(Vector2u size, Vector2i position, std::string title, 
@@ -48,7 +48,7 @@ namespace sf
 		SDL_Event m_oEvent;
 		std::atomic_bool m_atomWindowOpen;
 
-		char* m_pCurrentException;
+		std::string m_pCurrentException;
 
 	private:
 		void MessageLoop();

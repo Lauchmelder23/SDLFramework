@@ -22,7 +22,7 @@ namespace sf
 				SDLF_REQUIRED_SUBSYSTEMS << " but got " << mask << " instead). \n" <<
 				"Make sure to call SDL_Init(" << SDLF_REQUIRED_SUBSYSTEMS << ") before instantiating sf::IWindow. \n" <<
 				"The most recent SDL_Error is: " << SDL_GetError() << std::endl;
-			m_pCurrentException = const_cast<char*>(errorStream.str().c_str());
+			m_pCurrentException = errorStream.str();
 			return;
 		}
 
@@ -32,7 +32,7 @@ namespace sf
 			m_pWindow = SDL_CreateWindow(title.c_str(), position.x, position.y, size.x, size.y, windowFlags);
 			if (IS_NULLPTR(m_pWindow))
 			{
-				m_pCurrentException = const_cast<char*>(SDL_GetError());
+				m_pCurrentException = SDL_GetError();
 				return;
 			}
 		}
@@ -43,7 +43,7 @@ namespace sf
 			m_pRenderer = SDL_CreateRenderer(m_pWindow, -1, renderFlags);
 			if (IS_NULLPTR(m_pRenderer))
 			{
-				m_pCurrentException = const_cast<char*>(SDL_GetError());
+				m_pCurrentException = SDL_GetError();
 				return;
 			}
 		}
@@ -125,7 +125,7 @@ namespace sf
 	void IWindow::MessageLoop()
 	{
 		Create(m_oSize, m_oPosition, m_strTitle, m_uWindowFlags, m_uRenderFlags);
-		if (std::strcmp(m_pCurrentException, ""))
+		if (m_pCurrentException != "")
 		{
 			std::cerr << "ERROR: " << m_pCurrentException << std::endl;
 			return;
