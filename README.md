@@ -1,5 +1,7 @@
 # SDL Framework
 
+[![CodeFactor](https://www.codefactor.io/repository/github/lauchmelder23/sdlframework/badge)](https://www.codefactor.io/repository/github/lauchmelder23/sdlframework)
+
 A small wrapper around SDL2 that makes development of non-demanding small projects easier.
 
 ## Installation
