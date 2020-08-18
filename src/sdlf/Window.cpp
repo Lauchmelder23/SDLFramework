@@ -51,7 +51,6 @@ namespace sf
 		m_oEventFunction = std::bind(&IWindow::OnEvent, this, std::placeholders::_1);
 		m_oUpdateFunction = std::bind<bool>(&IWindow::OnUpdate, this, std::placeholders::_1);
 		m_oRenderFunction = std::bind(&IWindow::OnRender, this, std::placeholders::_1);
-
 	}
 
 	void IWindow::Destroy()
@@ -78,7 +77,6 @@ namespace sf
 
 		if(m_oMsgLoopThread.joinable())
 			m_oMsgLoopThread.join();
-
 	}
 
 	void IWindow::AddEventCallback(EventCallback callback, void* userdata)
@@ -109,7 +107,6 @@ namespace sf
 			m_oEventFunction = std::bind(&IWindow::OnEvent, this, std::placeholders::_1);
 			m_oUpdateFunction = std::bind<bool>(&IWindow::OnUpdate, this, std::placeholders::_1);
 			m_oRenderFunction = std::bind(&IWindow::OnRender, this, std::placeholders::_1);
-
 		}
 	}
 
@@ -119,7 +116,6 @@ namespace sf
 		m_oSize(size), m_oPosition(position), m_strTitle(title), m_uWindowFlags(windowFlags),
 		m_uRenderFlags(renderFlags), m_pCurrentScreen(nullptr), m_pCurrentException("")
 	{
-		
 	}
 
 	void IWindow::MessageLoop()
@@ -142,7 +138,6 @@ namespace sf
 			{
 				if (m_oEventFunction(m_oEvent))
 				{
-
 					if (m_oEvent.type == SDL_QUIT)
 					{
 						m_atomWindowOpen = false;

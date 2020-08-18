@@ -38,9 +38,9 @@ namespace sf
 
 		virtual bool OnCreate() { return true; }
 		virtual void OnClose() { }
-		virtual bool OnEvent(const SDL_Event& event) override { return true; }
-		virtual bool OnUpdate(double frametime) override { return true; }
-		virtual void OnRender(SDL_Renderer* renderer) override { }
+		bool OnEvent(const SDL_Event& event) override { return true; }
+		bool OnUpdate(double frametime) override { return true; }
+		void OnRender(SDL_Renderer* renderer) override { }
 
 	protected:
 		SDL_Window* m_pWindow;

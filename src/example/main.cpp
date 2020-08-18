@@ -7,17 +7,17 @@ using namespace sf;
 class MyScreen : public IScreen
 {
 public:
-	virtual void OnFocus() override
+	void OnFocus(IWindow* parent) override
 	{
 		printf("Received Focus\n");
 	}
 
-	virtual void OnDefocus() override
+	void OnDefocus() override
 	{
 		printf("Lost Focus\n");
 	}
 
-	virtual void OnRender(SDL_Renderer* renderer) override
+	void OnRender(SDL_Renderer* renderer) override
 	{
 		SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
 		SDL_RenderClear(renderer);
