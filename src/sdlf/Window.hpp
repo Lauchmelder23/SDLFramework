@@ -21,10 +21,11 @@ namespace sf
 		void Create(Vector2u size, Vector2i position, std::string title, 
 			Uint32 windowFlags = SDL_WINDOW_RESIZABLE, Uint32 rendererFlags = SDL_RENDERER_SOFTWARE);
 
-		void Launch(bool threaded = false);
+		void Open();
+		void Launch();
 		void Stop();
 
-		bool IsOpen() { return m_atomWindowOpen; }
+		bool IsOpen() { return m_isWindowOpen; }
 
 		void AddEventCallback(EventCallback callback, void* userdata);
 
@@ -38,6 +39,8 @@ namespace sf
 
 		virtual bool OnCreate() { return true; }
 		virtual void OnClose() { }
+
+	protected:
 		bool OnEvent(const SDL_Event& event) override { return true; }
 		bool OnUpdate(double frametime) override { return true; }
 		void OnRender(SDL_Renderer* renderer) override { }
@@ -46,7 +49,8 @@ namespace sf
 		SDL_Window* m_pWindow;
 		SDL_Renderer* m_pRenderer;
 		SDL_Event m_oEvent;
-		std::atomic_bool m_atomWindowOpen;
+		bool m_isWindowOpen;
+		Uint32 m_uWindowID;
 
 		std::string m_pCurrentException;
 
@@ -61,8 +65,6 @@ namespace sf
 		Uint32 m_uWindowFlags, m_uRenderFlags;
 
 		IScreen* m_pCurrentScreen;
-
-		std::thread m_oMsgLoopThread;
 
 
 		std::function<bool( SDL_Event& )> m_oEventFunction;

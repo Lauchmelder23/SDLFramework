@@ -7,7 +7,6 @@
 
 namespace sf
 {
-
 	void IWindow::Create(Vector2u size, Vector2i position, std::string title, 
 		Uint32 windowFlags /*= SDL_WINDOW_RESIZABLE*/, Uint32 renderFlags /*= SDL_RENDERER_SOFTWARE*/)
 	{
@@ -35,6 +34,7 @@ namespace sf
 				m_pCurrentException = SDL_GetError();
 				return;
 			}
+			m_uWindowID = SDL_GetWindowID(m_pWindow);
 		}
 
 		// Create SDL_Renderer
@@ -59,24 +59,15 @@ namespace sf
 		SDL_DestroyWindow(m_pWindow);
 	}
 
-	void IWindow::Launch(bool threaded /*= false*/)
+	void IWindow::Launch()
 	{
-		m_atomWindowOpen = true;
-		if (threaded)
-		{
-			m_oMsgLoopThread = std::thread(&IWindow::MessageLoop, this);
-		}
-		else {
-			MessageLoop();
-		}
+		MessageLoop();
 	}
 
 	void IWindow::Stop()
 	{
-		m_atomWindowOpen = false;
-
-		if(m_oMsgLoopThread.joinable())
-			m_oMsgLoopThread.join();
+		OnClose();
+		Destroy();
 	}
 
 	void IWindow::AddEventCallback(EventCallback callback, void* userdata)
@@ -114,12 +105,40 @@ namespace sf
 		Uint32 windowFlags /*= SDL_WINDOW_RESIZABLE*/, Uint32 renderFlags /*= SDL_RENDERER_SOFTWARE*/) :
 		m_pWindow(nullptr), m_pRenderer(nullptr), m_oEvent(),
 		m_oSize(size), m_oPosition(position), m_strTitle(title), m_uWindowFlags(windowFlags),
-		m_uRenderFlags(renderFlags), m_pCurrentScreen(nullptr), m_pCurrentException("")
+		m_uRenderFlags(renderFlags), m_pCurrentScreen(nullptr), m_pCurrentException(""),
+		m_isWindowOpen(false), m_uWindowID(-1)
 	{
 	}
 
 	void IWindow::MessageLoop()
 	{
+		Open();
+
+		std::chrono::steady_clock::time_point pastTime = std::chrono::steady_clock::now();
+		while (m_isWindowOpen)
+		{
+			while (SDL_PollEvent(&m_oEvent))
+			{
+				m_oEventFunction(m_oEvent);
+			}
+
+			double frametime = std::chrono::duration_cast<std::chrono::duration<double>>(
+				std::chrono::steady_clock::now() - pastTime
+				).count();
+			pastTime = std::chrono::steady_clock::now();
+			if (!m_oUpdateFunction(frametime))
+				m_isWindowOpen = false;
+
+			m_oRenderFunction(m_pRenderer);
+
+			SDL_RenderPresent(m_pRenderer);
+		}
+	}
+
+	void IWindow::Open()
+	{
+		m_isWindowOpen = true;
+
 		Create(m_oSize, m_oPosition, m_strTitle, m_uWindowFlags, m_uRenderFlags);
 		if (m_pCurrentException != "")
 		{
@@ -128,37 +147,8 @@ namespace sf
 		}
 
 		// Test if the user instance's creation succeeded
-		if (!OnCreate()) 
-			m_atomWindowOpen = false;
-
-		std::chrono::steady_clock::time_point pastTime = std::chrono::steady_clock::now();
-		while (m_atomWindowOpen)
-		{
-			while (SDL_PollEvent(&m_oEvent))
-			{
-				if (m_oEventFunction(m_oEvent))
-				{
-					if (m_oEvent.type == SDL_QUIT)
-					{
-						m_atomWindowOpen = false;
-					}
-				}
-			}
-
-			double frametime = std::chrono::duration_cast<std::chrono::duration<double>>(
-				std::chrono::steady_clock::now() - pastTime
-				).count();
-			pastTime = std::chrono::steady_clock::now();
-			if (!m_oUpdateFunction(frametime))
-				m_atomWindowOpen = false;
-
-			m_oRenderFunction(m_pRenderer);
-
-			SDL_RenderPresent(m_pRenderer);
-		}
-
-		OnClose();
-		Destroy();
+		if (!OnCreate())
+			m_isWindowOpen = false;
 	}
 
 }

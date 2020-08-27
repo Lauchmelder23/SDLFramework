@@ -12,7 +12,7 @@ namespace sf
 		virtual void OnFocus(IWindow* parent) { }
 		virtual void OnDefocus() { }
 		bool OnUpdate(double frametime) override { return true; }
-		bool OnEvent(const SDL_Event& event) override { return true; }
+		bool OnEvent(const SDL_Event& event) override { }
 		void OnRender(SDL_Renderer* renderer) override {}	
 
 	protected:
